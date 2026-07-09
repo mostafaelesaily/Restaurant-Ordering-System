@@ -7,7 +7,7 @@ namespace Data_Access_Layer.Seed
 {
     public class RoleSeeder
     {
-      public async Task SeedRoleAsync(RoleManager<IdentityRole> roleManager)
+      public static async Task SeedRoleAsync(RoleManager<IdentityRole> roleManager)
         {
             string[] roles = {"Admin", "Manager", "Cheif","Delivery" };
             
