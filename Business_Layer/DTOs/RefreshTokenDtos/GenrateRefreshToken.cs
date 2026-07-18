@@ -6,5 +6,6 @@ namespace Business_Layer.DTOs.RefreshTokenDtos
 {
     public class GenrateRefreshToken
     {
+        public string Token { get; set; }
     }
 }

@@ -60,7 +60,6 @@ namespace Data_Access_Layer.Repositories
                 PageNumber = pageNum,
                 PageSize = pageSize,
                 TotalCount = totalCount
-
             };
         }  
 

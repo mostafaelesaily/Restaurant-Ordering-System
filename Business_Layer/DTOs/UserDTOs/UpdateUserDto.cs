@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Business_Layer.DTOs.UserDTOs
 {
-    internal class UpdateUserDto
+    public class UpdateUserDto
     {
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

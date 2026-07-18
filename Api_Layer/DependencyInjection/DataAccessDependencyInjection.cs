@@ -1,6 +1,7 @@
 ﻿using Business_Layer.Interfaces;
 using Data_Access_Layer.Data;
 using Data_Access_Layer.Repositories;
+using Data_Access_Layer.Services;
 using Data_Access_Layer.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace Api_Layer.DependencyInjection
             );
             services.AddScoped(typeof(IGenaricRepo<,>), typeof(MainGenaricRepo<,>));
             services.AddScoped<IUow, uow>();
+            services.AddScoped<IFileService, FileService>();
             return services;
         }
     }
