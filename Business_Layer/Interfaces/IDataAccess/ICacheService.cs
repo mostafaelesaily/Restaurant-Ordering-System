@@ -14,7 +14,7 @@ namespace Business_Layer.Interfaces
             TimeSpan? slidingExpiration = null,
             TimeSpan? absoluteExpiration = null);
 
-        Task RemoveAsync(string key);
+        Task RemoveAsync(string Pattern);
 
         Task<bool> ExistsAsync(string key);
 

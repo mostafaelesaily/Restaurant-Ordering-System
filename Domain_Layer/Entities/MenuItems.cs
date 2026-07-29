@@ -18,8 +18,6 @@ namespace Domain_Layer.Entities
 
         public decimal price { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public TimeSpan? PreparationTime { get; set; }
 
         public bool isAvailable { get; set; }
@@ -28,5 +26,6 @@ namespace Domain_Layer.Entities
         public ICollection<Favorite> favorites { get; set; } = new List<Favorite>();
         public ICollection<Reviews> reviews { get; set; } = new List<Reviews>();
         public ICollection<OrderItems> orderItems { get; set; } = new List<OrderItems>();
+        public ICollection<Files> files { get; set; } = new List<Files>();
     }
 }

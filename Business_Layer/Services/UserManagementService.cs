@@ -41,22 +41,25 @@ namespace Business_Layer.Services
             logger.LogInformation("Attemping To Get Users With Paggenation");
             var cacheKey = $"Get_Users_pageNum:" +
                   $"{pageNum}_pageSize:{pageSize}";
-            var _query = uow.AppUserRepo.Query();
-            var users = await uow.AppUserRepo.GetAllPaged
-                (pageNum, pageSize,_query);
-            var usersDto = await cacheService.GetOrSetAsync
+           
+            var result = await cacheService.GetOrSetAsync
                 (
                 cacheKey,
-                async() => { return mapper.Map <List<GetUserDto>>(users.Data); }
+                async() => {
+                   
+                    var users = await uow.AppUserRepo.GetAllPaged
+                        (pageNum, pageSize);
+                    return new PaginatedResultDto<GetUserDto>
+                    {
+                        Data = mapper.Map<List<GetUserDto>>(users.Data),
+                        PageNumber = pageNum,
+                        PageSize = pageSize,
+                        TotalCount = users.TotalCount
+                    };
+                }
                 );
-             return new PaginatedResultDto<GetUserDto>
-            {
-                Data = usersDto,
-                PageNumber = users.PageNumber,
-                PageSize = users.PageSize,
-                TotalCount = users.TotalCount
-            };
 
+            return result!;
         }
 
         public async Task<GetUserDto> GetUserInfo(string searchKey)
@@ -91,8 +94,10 @@ namespace Business_Layer.Services
                 throw new NotFoundException("user Not Found");
             }
            var updatedUser =  mapper.Map(updateUserDto, user);
-           await uow.SaveChanges();
-           return mapper.Map<UpdateUserDto>(updatedUser); 
+           await uow.SaveChangesAsync();
+            await cacheService.RemoveAsync("Get_Users");
+            await cacheService.RemoveAsync("Get_User");
+            return mapper.Map<UpdateUserDto>(updatedUser); 
         }
 
         public async Task<bool> BanUser(string searchKey)
@@ -114,6 +119,8 @@ namespace Business_Layer.Services
                 throw new BadRequestException(
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
+            await cacheService.RemoveAsync("Get_Users");
+            await cacheService.RemoveAsync("Get_User");
             return result.Succeeded;
         }
         public async Task<bool> UnBanUser(string searchKey)
@@ -131,6 +138,8 @@ namespace Business_Layer.Services
             {
                 throw new BadRequestException(string.Join(", ",result.Errors.Select(e => e.Description)));
             }
+            await cacheService.RemoveAsync("Get_Users");
+            await cacheService.RemoveAsync("Get_User");
             return result.Succeeded;
 
         }
@@ -145,7 +154,9 @@ namespace Business_Layer.Services
             if (user == null)
                 throw new NotFoundException("User Not Found");
             await userManager.DeleteAsync(user);
-            await uow.SaveChanges();
+            await uow.SaveChangesAsync();
+            await cacheService.RemoveAsync("Get_Users");
+            await cacheService.RemoveAsync("Get_User");
         }
 
     }

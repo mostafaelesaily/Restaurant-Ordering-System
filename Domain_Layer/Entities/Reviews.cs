@@ -20,5 +20,6 @@ namespace Domain_Layer.Entities
 
         public AppUser User { get; set; }
         public MenuItems MenuItems { get; set; }
+        public ICollection<Files> files { get; set; } = new List<Files>();
     }
 }

@@ -1,16 +1,18 @@
 ﻿using Business_Layer.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace Data_Access_Layer.Cache
 {
     public class CacheService : ICacheService
     {
         private readonly IDistributedCache cache;
-
-        public CacheService(IDistributedCache cache)
+        private readonly IConnectionMultiplexer redis;
+        public CacheService(IDistributedCache cache , IConnectionMultiplexer redis)
         {
             this.cache = cache;
+            this.redis = redis;
         }
 
         public async Task<bool> ExistsAsync(string key)
@@ -63,9 +65,15 @@ namespace Data_Access_Layer.Cache
             await cache.SetStringAsync(key, json, options);
         }
 
-        public async Task RemoveAsync(string key)
+        public async Task RemoveAsync(string Pattern)
         {
-            await cache.RemoveAsync(key);
+            var server = redis.GetServer(redis.GetEndPoints().First());
+            var database = redis.GetDatabase();
+            foreach (var key in server.Keys(pattern : $"{Pattern}*"))
+            {
+                await database.KeyDeleteAsync(key);
+            }
+
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Business_Layer.DTOs.PaginatedDtos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
@@ -8,7 +7,8 @@ namespace Business_Layer.Interfaces
 {
     public interface IGenaricRepo<T , TKey> where T : class
      {
-        Task<PaginatedResultDto<T>> GetAllPaged(int pageNum, int pageSize,IQueryable<T> query);
+        Task<(IEnumerable<T> Data, int TotalCount)> GetAllPaged(int pageNum, int pageSize, IQueryable<T> query);
+        Task<(IEnumerable<T> Data,int TotalCount)> GetAllPaged(int pageNum, int pageSize);
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> FindElementAsync(Expression<Func<T, bool>> filter);
         IQueryable<T> Query();

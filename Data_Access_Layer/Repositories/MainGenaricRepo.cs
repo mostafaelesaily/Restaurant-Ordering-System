@@ -50,19 +50,27 @@ namespace Data_Access_Layer.Repositories
             return await dbSet.ToListAsync();
         }
 
-        public async Task<PaginatedResultDto<T>> GetAllPaged(int pageNum, int pageSize, IQueryable<T> query)
+        public async Task<(IEnumerable<T> Data, int TotalCount)> GetAllPaged(
+          int pageNum,
+          int pageSize,
+          IQueryable<T> query)
         {
             var totalCount = await query.CountAsync();
-            var data = await query.Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginatedResultDto<T>
-            {
-                Data = data,
-                PageNumber = pageNum,
-                PageSize = pageSize,
-                TotalCount = totalCount
-            };
-        }  
 
+            var data = await query
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (data, totalCount);
+        }
+
+        public async Task<(IEnumerable<T> Data, int TotalCount)> GetAllPaged(
+            int pageNum,
+            int pageSize)
+        {
+            return await GetAllPaged(pageNum, pageSize, dbSet);
+        }
         public async Task<T?> GetByIdAsync(TKey id)
         {
             return await dbSet.FindAsync(id);

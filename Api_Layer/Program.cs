@@ -1,8 +1,9 @@
-using Api_Layer.DependencyInjection;
 using Api_Layer.Extensions;
 using Api_Layer.Middlewares;
+using Application;
 using Business_Layer.Mappings;
 using Data_Access_Layer.Data;
+using Infrastructure.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,11 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDataAccessLayer(builder.Configuration);
-builder.Services.AddCacheService(builder.Configuration);
-builder.Services.AddAutoMapper();
-builder.Services.AddServices();
-builder.Services.AddIdentity(builder.Configuration);
+builder.Services.AddAppDI();
+builder.Services.AddCaching(builder.Configuration);
+builder.Services.AddFileServices();
+builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddPersistence(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -25,6 +25,7 @@ namespace Data_Access_Layer.Data
         public DbSet<Reservations> Reservations { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
         public DbSet<Tables> Tables { get; set; }
+        public DbSet<Files> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -47,8 +48,6 @@ namespace Data_Access_Layer.Data
                 .HasMaxLength(100).IsRequired();
             builder.Entity<Categories>().Property(d => d.description)
                 .HasMaxLength(500);
-            builder.Entity<Categories>().Property(i => i.ImageUrl)
-                .HasMaxLength(2048);
             builder.Entity<Categories>().HasIndex(cat => cat.name);
 
             // MenuItem Configuration
@@ -59,7 +58,7 @@ namespace Data_Access_Layer.Data
             builder.Entity<MenuItems>().Property(mi => mi.name).IsRequired().HasMaxLength(150);
             builder.Entity<MenuItems>().Property(mi => mi.description).HasMaxLength(1000);
             builder.Entity<MenuItems>().Property(mi => mi.price).HasPrecision(18, 2);
-            builder.Entity<MenuItems>().Property(mi => mi.ImageUrl).HasMaxLength(2048);
+          
 
             // Coupon Configuration
             builder.Entity<Coupon>().ToTable("Coupon");
@@ -127,6 +126,16 @@ namespace Data_Access_Layer.Data
             builder.Entity<Tables>().Property(t => t.QrCode).HasMaxLength(500);
             builder.Entity<Tables>().Property(t => t.Capacity).IsRequired();
             builder.Entity<Tables>().Property(t => t.TableNumber);
+
+            // File Configuration
+            builder.Entity<Files>().ToTable("File");
+            builder.Entity<Files>().HasKey(f => f.id);
+            builder.Entity<Files>().HasIndex(f => f.FileName);
+            builder.Entity<Files>().HasIndex(f => f.FileType);
+            builder.Entity<Files>().Property(f => f.FileName).IsRequired().HasMaxLength(255);
+            builder.Entity<Files>().Property(f => f.FilePath).IsRequired().HasMaxLength(2000);
+            builder.Entity<Files>().Property(f => f.FileType).HasMaxLength(100);
+            builder.Entity<Files>().Property(f => f.CreatedAt).IsRequired();
             // Configuration End.
 
             // Relations Start :
@@ -255,6 +264,26 @@ namespace Data_Access_Layer.Data
                 .WithMany(mi => mi.reviews)
                 .HasForeignKey(r => r.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Files relations
+            builder.Entity<Files>()
+                .HasOne(f => f.categories)
+                .WithMany(c => c.files)
+                .HasForeignKey(f => f.categoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Files>()
+                .HasOne(f => f.menuItems)
+                .WithMany(mi => mi.files)
+                .HasForeignKey(f => f.menuItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Files>()
+                .HasOne(f => f.reviews)
+                .WithMany(r => r.files)
+                .HasForeignKey(f => f.reviewId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Relations End .
 
         }

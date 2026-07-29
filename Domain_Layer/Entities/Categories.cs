@@ -10,8 +10,7 @@ namespace Domain_Layer.Entities
         public string name { get; set; }
         public string ? description { get; set; }
 
-        public string ? ImageUrl { get; set; }
-
         public ICollection<MenuItems> items { get; set; } = new List<MenuItems>();
+        public ICollection<Files> files { get; set; } = new List<Files>();
     }
 }
