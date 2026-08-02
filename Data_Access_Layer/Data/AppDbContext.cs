@@ -122,10 +122,10 @@ namespace Data_Access_Layer.Data
             // Table Configuration
             builder.Entity<Tables>().ToTable("Table");
             builder.Entity<Tables>().HasKey(t => t.Id);
-            builder.Entity<Tables>().HasIndex(t => t.TableNumber).IsUnique();
+            builder.Entity<Tables>().HasIndex(t => t.TableNumber).IsUnique(true);
             builder.Entity<Tables>().Property(t => t.QrCode).HasMaxLength(500);
             builder.Entity<Tables>().Property(t => t.Capacity).IsRequired();
-            builder.Entity<Tables>().Property(t => t.TableNumber);
+            builder.Entity<Tables>().Property(t => t.TableNumber).IsRequired();
 
             // File Configuration
             builder.Entity<Files>().ToTable("File");

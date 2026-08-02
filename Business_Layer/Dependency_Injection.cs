@@ -4,6 +4,8 @@ using Business_Layer.Interfaces.IService;
 using Business_Layer.Mappings;
 using Business_Layer.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Resturant_Ordering_System.Application.Interfaces.IService;
+using Resturant_Ordering_System.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +25,8 @@ namespace Application
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IMenuItemService, MenuItemService>();
             services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<ITableService, TableService>();
+            services.AddScoped<IFavoriteService, FavoriteService>();
             return services;
         }
     }

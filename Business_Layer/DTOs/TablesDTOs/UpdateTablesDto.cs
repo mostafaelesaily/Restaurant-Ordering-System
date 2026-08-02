@@ -9,7 +9,7 @@ namespace Application.DTOs.TablesDTOs
 
         [Required]
         public int Capacity { get; set; }
-
+        [MaxLength(500,ErrorMessage ="QrCode must be at most 500 characters long")]
         public string? QrCode { get; set; }
         public bool isActive { get; set; }
     }

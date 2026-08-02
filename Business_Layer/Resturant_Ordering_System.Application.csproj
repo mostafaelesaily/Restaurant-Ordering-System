@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain_Layer\Domain_Layer.csproj" />
+    <ProjectReference Include="..\Domain_Layer\Resturant_Ordering_System.Domain.csproj" />
   </ItemGroup>
 
 </Project>

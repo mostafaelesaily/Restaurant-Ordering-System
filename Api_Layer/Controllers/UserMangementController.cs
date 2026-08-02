@@ -17,7 +17,7 @@ namespace Api_Layer.Controllers
             this.userManagement = userManagement;
         }
         [HttpGet("[action]")]
-        //[Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager")]
 
         public async Task<IActionResult> GetAllusers(int pageNum , int pageSize)
         {

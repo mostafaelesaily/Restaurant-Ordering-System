@@ -171,7 +171,7 @@ namespace Application.Services
                     };
                 }
                 );
-            return result;
+            return result!;
         }
     }
 }

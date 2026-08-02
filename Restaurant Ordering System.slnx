@@ -1,8 +1,9 @@
 <Solution>
   <Folder Name="/Src/">
-    <Project Path="Api_Layer/Api_Layer.csproj" />
-    <Project Path="Business_Layer/Application.csproj" />
-    <Project Path="Data_Access_Layer/Infrastructure.csproj" />
-    <Project Path="Domain_Layer/Domain_Layer.csproj" />
+    <Project Path="Api_Layer/Resturant_Ordering_System.Api_Layer.csproj" />
+    <Project Path="Business_Layer/Resturant_Ordering_System.Application.csproj" />
+    <Project Path="Data_Access_Layer/Resturant_Ordering_System.Infrastructre.csproj" />
+    <Project Path="Domain_Layer/Resturant_Ordering_System.Domain.csproj" />
+    <Project Path="Resturant_Ordering_System.Test/Resturant_Ordering_System.Test.csproj" Id="c470368b-f9f0-4a98-aa15-86dfc045a159" />
   </Folder>
 </Solution>

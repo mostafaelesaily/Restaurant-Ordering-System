@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Business_Layer\Application.csproj" />
-    <ProjectReference Include="..\Data_Access_Layer\Infrastructure.csproj" />
+    <ProjectReference Include="..\Business_Layer\Resturant_Ordering_System.Application.csproj" />
+    <ProjectReference Include="..\Data_Access_Layer\Resturant_Ordering_System.Infrastructre.csproj" />
   </ItemGroup>
 
 </Project>

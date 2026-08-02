@@ -5,6 +5,8 @@ using Domain_Layer.Abstract;
 using Domain_Layer.Entities;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
+using Resturant_Ordering_System.Domain.Abstract;
+using Resturant_Ordering_System.Infrastructre.Repositories;
 
 namespace Data_Access_Layer.UnitOfWork
 {
@@ -22,6 +24,7 @@ namespace Data_Access_Layer.UnitOfWork
             Categories = new catgoreyRepo(_context);
             couponRepo = new CouponRepo(_context);
             Favorite = new MainGenaricRepo<Favorite, int>(_context);
+            FavoriteRepo = new FavoriteRepo(_context);
             MenuItems = new menuItemRepo(_context);
             Notifications = new MainGenaricRepo<Notifications, int>(_context);
             OrderCoupon = new MainGenaricRepo<OrderCoupon, int>(_context);
@@ -29,7 +32,7 @@ namespace Data_Access_Layer.UnitOfWork
             Orders = new MainGenaricRepo<Orders, int>(_context);
             Reservations = new MainGenaricRepo<Reservations, int>(_context);
             Reviews = new MainGenaricRepo<Reviews, int>(_context);
-            Tables = new MainGenaricRepo<Tables, int>(_context);
+            Tables = new TableRepo(_context);
             Files = new MainGenaricRepo<Files, int>(_context);
         }
 
@@ -45,6 +48,8 @@ namespace Data_Access_Layer.UnitOfWork
 
         public IGenaricRepo<Favorite, int> Favorite { get; }
 
+        public IFavoriteRepo FavoriteRepo { get; }
+
         public IMenuItemRepo MenuItems { get; }
 
         public IGenaricRepo<Notifications, int> Notifications { get; }
@@ -59,7 +64,7 @@ namespace Data_Access_Layer.UnitOfWork
 
         public IGenaricRepo<Reviews, int> Reviews { get; }
 
-        public IGenaricRepo<Tables, int> Tables { get; }
+        public ITableRepo Tables { get; }
 
         public IGenaricRepo<Files, int> Files { get; }
 
