@@ -9,12 +9,34 @@ namespace Resturant_Ordering_System.Infrastructre.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            await Clients.Client(Context.ConnectionId)
-           .ReceiveNotification($"Connection Work Fine For : " +
-           $"{
-           Context.User?.Identity?.Name    
-           }");
-           await base.OnConnectedAsync();
+            if (Context.UserIdentifier is not null)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId
+                    , Context.UserIdentifier);
+            }
+            if (Context.User!.IsInRole("Admin"))
+            {
+                await Groups.AddToGroupAsync(
+                    Context.ConnectionId,
+                    "Admin");
+            }
+            await base.OnConnectedAsync();
         }
+
+        public async override Task OnDisconnectedAsync(Exception? exception)
+        {
+            if (Context.UserIdentifier is not null)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId
+                    , Context.UserIdentifier);
+            }
+            if (Context.User!.IsInRole("Admin"))
+            {
+                await Groups.RemoveFromGroupAsync(
+                    Context.ConnectionId,
+                    "Admin");
+            }
+            await base.OnDisconnectedAsync(exception);
     }
+    } 
 }
