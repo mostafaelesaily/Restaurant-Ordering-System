@@ -19,14 +19,13 @@ namespace Data_Access_Layer.UnitOfWork
             _context = context;
 
             AppUserRepo = new MainGenaricRepo<AppUser, string>(_context);
-            Cart = new MainGenaricRepo<Cart, int>(_context);
-            CartItem = new MainGenaricRepo<CartItem, int>(_context);
+            Cart = new CartRepo(_context);
             Categories = new catgoreyRepo(_context);
             couponRepo = new CouponRepo(_context);
             Favorite = new MainGenaricRepo<Favorite, int>(_context);
             FavoriteRepo = new FavoriteRepo(_context);
             MenuItems = new menuItemRepo(_context);
-            Notifications = new MainGenaricRepo<Notifications, int>(_context);
+            Notifications = new NotificationRepo(_context);
             OrderCoupon = new MainGenaricRepo<OrderCoupon, int>(_context);
             OrderItems = new MainGenaricRepo<OrderItems, int>(_context);
             Orders = new MainGenaricRepo<Orders, int>(_context);
@@ -38,9 +37,7 @@ namespace Data_Access_Layer.UnitOfWork
 
         public IGenaricRepo<AppUser, string> AppUserRepo { get; }
 
-        public IGenaricRepo<Cart, int> Cart { get; }
-
-        public IGenaricRepo<CartItem, int> CartItem { get; }
+        public ICartRepository Cart { get; }
 
         public ICatgoreyRepo Categories { get; }
 
@@ -52,7 +49,7 @@ namespace Data_Access_Layer.UnitOfWork
 
         public IMenuItemRepo MenuItems { get; }
 
-        public IGenaricRepo<Notifications, int> Notifications { get; }
+        public INotificationRepo  Notifications { get; }
 
         public IGenaricRepo<OrderCoupon, int> OrderCoupon { get; }
 

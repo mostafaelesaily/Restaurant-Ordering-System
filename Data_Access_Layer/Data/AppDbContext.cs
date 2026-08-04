@@ -37,7 +37,7 @@ namespace Data_Access_Layer.Data
             builder.Entity<Cart>().HasKey(c => c.Id);
             builder.Entity<Cart>().HasIndex(c => c.CustomerId);
 
-            // CartItem Configuration (composite key)
+            // CartItem Configuration 
             builder.Entity<CartItem>().ToTable("CartItem");
             builder.Entity<CartItem>().HasKey(ci => ci.Id);
 
@@ -152,7 +152,7 @@ namespace Data_Access_Layer.Data
                 .HasOne(ci => ci.cart)
                 .WithMany(c => c.Items)
                 .HasForeignKey(ci => ci.CartId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<CartItem>()
                 .HasOne(ci => ci.menuItems)

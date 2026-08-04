@@ -11,14 +11,13 @@ namespace Business_Layer.Interfaces
     public interface IUow :  IDisposable
     {
         public IGenaricRepo<AppUser, string> AppUserRepo { get; }
-        public IGenaricRepo<Cart,int> Cart { get; }
-        public IGenaricRepo<CartItem,int> CartItem { get; }
+        public ICartRepository Cart { get; }
         public ICatgoreyRepo Categories { get; }
         public IGenaricRepo<Favorite, int> Favorite { get; }
         public IFavoriteRepo FavoriteRepo { get; }
         public IMenuItemRepo MenuItems { get; }
         public ICouponRepo couponRepo { get; }
-        public IGenaricRepo<Notifications,int> Notifications { get; }
+        public INotificationRepo Notifications { get; }
         public IGenaricRepo<OrderCoupon, int> OrderCoupon { get; }
         public IGenaricRepo<OrderItems,int> OrderItems { get; }
         public IGenaricRepo<Orders,int> Orders { get; }

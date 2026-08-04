@@ -1,10 +1,9 @@
 using Api_Layer.Extensions;
 using Api_Layer.Middlewares;
 using Application;
-using Business_Layer.Mappings;
-using Data_Access_Layer.Data;
 using Infrastructure.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Resturant_Ordering_System.Infrastructre.BackgroundServices;
+using Resturant_Ordering_System.Infrastructre.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<ServerTimeNotification>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAppDI();
@@ -33,4 +34,5 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationHub>("/notificationHub");
 app.Run();

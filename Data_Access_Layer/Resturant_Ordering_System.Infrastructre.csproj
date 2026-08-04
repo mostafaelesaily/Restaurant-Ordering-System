@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Business_Layer\Resturant_Ordering_System.Application.csproj" />
     <ProjectReference Include="..\Domain_Layer\Resturant_Ordering_System.Domain.csproj" />
   </ItemGroup>

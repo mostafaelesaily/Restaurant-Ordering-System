@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain_Layer.Entities
+namespace Business_Layer.DTOs.NotificationDTOs
 {
-    public class Notifications
+    public class GetNotificationDto
     {
         public int Id { get; set; }
 
@@ -14,9 +14,8 @@ namespace Domain_Layer.Entities
 
         public string Message { get; set; }
 
-        public bool IsRead { get; set; } = false;
+        public bool IsRead { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public AppUser User { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
