@@ -1,4 +1,4 @@
-﻿using Business_Layer.Interfaces;
+using Business_Layer.Interfaces;
 using Data_Access_Layer.Data;
 using Data_Access_Layer.Repositories;
 using Domain_Layer.Abstract;
@@ -26,11 +26,10 @@ namespace Data_Access_Layer.UnitOfWork
             FavoriteRepo = new FavoriteRepo(_context);
             MenuItems = new menuItemRepo(_context);
             Notifications = new NotificationRepo(_context);
-            OrderCoupon = new MainGenaricRepo<OrderCoupon, int>(_context);
             OrderItems = new MainGenaricRepo<OrderItems, int>(_context);
-            Orders = new MainGenaricRepo<Orders, int>(_context);
-            Reservations = new MainGenaricRepo<Reservations, int>(_context);
-            Reviews = new MainGenaricRepo<Reviews, int>(_context);
+            Orders = new OrderRepo(_context);
+            Reservations = new ReservationRepo(_context);
+            Reviews = new ReviewRepo(_context);
             Tables = new TableRepo(_context);
             Files = new MainGenaricRepo<Files, int>(_context);
         }
@@ -51,15 +50,13 @@ namespace Data_Access_Layer.UnitOfWork
 
         public INotificationRepo  Notifications { get; }
 
-        public IGenaricRepo<OrderCoupon, int> OrderCoupon { get; }
-
         public IGenaricRepo<OrderItems, int> OrderItems { get; }
 
-        public IGenaricRepo<Orders, int> Orders { get; }
+        public IOrderRepo Orders { get; }
 
-        public IGenaricRepo<Reservations, int> Reservations { get; }
+        public IReservationRepo Reservations { get; }
 
-        public IGenaricRepo<Reviews, int> Reviews { get; }
+        public IReviewRepo Reviews { get; }
 
         public ITableRepo Tables { get; }
 

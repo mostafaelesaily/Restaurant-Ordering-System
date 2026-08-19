@@ -3,6 +3,7 @@ using Api_Layer.Middlewares;
 using Application;
 using Infrastructure.DependencyInjection;
 using Resturant_Ordering_System.Infrastructre.BackgroundServices;
+using Resturant_Ordering_System.Infrastructre.DependencyInjection;
 using Resturant_Ordering_System.Infrastructre.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddCaching(builder.Configuration);
 builder.Services.AddFileServices();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddSendNotification();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain_Layer.Entities
+namespace Resturant_Ordering_System.Application.DTOs.ReviewDTOs
 {
-    public class Reviews
+    public class ReviewDetailsDto
     {
         public int Id { get; set; }
 
-        public string CustomerId { get; set; }
-
         public int MenuItemId { get; set; }
+
+        public string MenuItemName { get; set; }
 
         public int Rating { get; set; }
 
@@ -18,7 +18,8 @@ namespace Domain_Layer.Entities
 
         public DateTime CreatedAt { get; set; }
 
-        public AppUser User { get; set; }
-        public MenuItems MenuItems { get; set; }
+        public string CustomerName { get; set; }
+
+        public string CustomerEmail { get; set; }
     }
 }

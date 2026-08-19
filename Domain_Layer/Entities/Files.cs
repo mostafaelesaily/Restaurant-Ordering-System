@@ -23,6 +23,5 @@ namespace Domain_Layer.Entities
         public MenuItems menuItems { get; set; }
 
         public int? reviewId { get; set; }
-        public Reviews reviews { get; set; }
     }
 }

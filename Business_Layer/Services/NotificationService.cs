@@ -122,11 +122,11 @@ namespace Resturant_Ordering_System.Application.Services
             return mapper.Map<GetNotificationDto>(notification);
         }
 
-        public async Task MarkAsReadAsync(int notificationId , string userId)
+        public async Task MarkAsReadAsync(int notificationId, string userId)
         {
             logger.LogInformation("Attempting to mark notification {notificationId} as read", notificationId);
             var user = await uow.AppUserRepo.GetByIdAsync(userId);
-            if (user == null) 
+            if (user == null)
             {
                 logger.LogInformation($"Unable to mark user {userId}");
                 throw new NotFoundException("User not found");
@@ -134,22 +134,22 @@ namespace Resturant_Ordering_System.Application.Services
             var notification = await uow.Notifications.GetByIdAsync(notificationId);
             if (notification == null)
             {
-             logger.LogWarning("Notification with id {notificationId} not found", notificationId);
-             throw new NotFoundException("Notification not found");
+                logger.LogWarning("Notification with id {notificationId} not found", notificationId);
+                throw new NotFoundException("Notification not found");
             }
 
             notification.IsRead = true;
             await uow.Notifications.UpdateAsync(notification);
             await uow.SaveChangesAsync();
             await cacheService.RemoveAsync("Get_Notifications");
-            logger.LogInformation("Notification {notificationId} marked as read successfully", notificationId);        
+            logger.LogInformation("Notification {notificationId} marked as read successfully", notificationId);
         }
 
         public async Task DeleteAsync(int notificationId, string userId)
         {
             logger.LogInformation("Attempting to delete notification with id {notificationId}", notificationId);
             var user = await uow.AppUserRepo.GetByIdAsync(userId);
-            if (user == null) 
+            if (user == null)
             {
                 logger.LogInformation($"Unable to delete user {userId}");
                 throw new NotFoundException("User not found");
@@ -158,15 +158,15 @@ namespace Resturant_Ordering_System.Application.Services
 
             if (notification == null)
             {
-                    logger.LogWarning("Notification with id {notificationId} not found", notificationId);
-                    throw new NotFoundException("Notification not found");
+                logger.LogWarning("Notification with id {notificationId} not found", notificationId);
+                throw new NotFoundException("Notification not found");
             }
             await uow.Notifications.DeleteAsync(notification);
             await uow.SaveChangesAsync();
             await cacheService.RemoveAsync("Get_Notifications");
             logger.LogInformation("Notification with id {notificationId} deleted successfully", notificationId);
-            
-           
+
+
         }
     }
 }

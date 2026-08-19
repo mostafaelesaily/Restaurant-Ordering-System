@@ -19,7 +19,6 @@ namespace Data_Access_Layer.Data
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<MenuItems> MenuItems { get; set; }
         public DbSet<Notifications> Notifications { get; set; }
-        public DbSet<OrderCoupon> OrderCoupons { get; set; }
         public DbSet<OrderItems> OrderItems { get; set; }
         public DbSet<Orders> Orders { get; set; }
         public DbSet<Reservations> Reservations { get; set; }
@@ -81,10 +80,6 @@ namespace Data_Access_Layer.Data
             builder.Entity<Notifications>().HasIndex(n => n.Title);
             builder.Entity<Notifications>().Property(n => n.Title).IsRequired().HasMaxLength(200);
             builder.Entity<Notifications>().Property(n => n.Message).HasMaxLength(2000);
-
-            // OrderCoupon Configuration (composite key)
-            builder.Entity<OrderCoupon>().ToTable("OrderCoupon");
-            builder.Entity<OrderCoupon>().HasKey(oc => oc.id);
 
             // OrderItem Configuration
             builder.Entity<OrderItems>().ToTable("OrderItem");
@@ -186,20 +181,7 @@ namespace Data_Access_Layer.Data
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // OrderCoupon relations
-            builder.Entity<OrderCoupon>()
-                .HasOne(oc => oc.order)
-                .WithMany(o => o.orderCoupons)
-                .HasForeignKey(oc => oc.OrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<OrderCoupon>()
-                .HasOne(oc => oc.coupon)
-                .WithMany(c => c.orderCoupons)
-                .HasForeignKey(oc => oc.CouponId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            
             // OrderItems relations
             builder.Entity<OrderItems>()
                 .HasOne(oi => oi.order)
@@ -231,6 +213,13 @@ namespace Data_Access_Layer.Data
                .WithMany(u => u.Deliveryorders)
                .HasForeignKey(o => o.DeliveryId)
                .OnDelete(DeleteBehavior.Restrict);
+
+            // order - coupon 
+            builder.Entity<Orders>()
+                .HasOne(o => o.Coupon)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.couponId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Orders - Table (shadow FK TableId)
             builder.Entity<Orders>()
@@ -277,13 +266,6 @@ namespace Data_Access_Layer.Data
                 .WithMany(mi => mi.files)
                 .HasForeignKey(f => f.menuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Files>()
-                .HasOne(f => f.reviews)
-                .WithMany(r => r.files)
-                .HasForeignKey(f => f.reviewId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Relations End .
 
         }

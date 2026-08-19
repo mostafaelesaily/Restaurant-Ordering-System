@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business_Layer.DTOs.UserDTOs;
 using Domain_Layer.Entities;
+using Resturant_Ordering_System.Application.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Business_Layer.Mappings
             CreateMap<ChangePasswordDto, AppUser>();
             CreateMap<AppUser, UpdateUserDto>();
             CreateMap<UpdateUserDto, AppUser>();
-            
+            CreateMap<EmployeeDto, AppUser>();
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Domain_Layer.Entities
 {
     public class AppUser : IdentityUser
     {
+        public bool MustChangePassword { get; set; } = false;
         public Cart cart {  get; set; }
-
         public ICollection<Orders> Userorders { get; set; } = new List<Orders>();
         public ICollection<Orders> Cheiforders { get; set; } = new List<Orders>();
         public ICollection<Orders> Deliveryorders { get; set; } = new List<Orders>();

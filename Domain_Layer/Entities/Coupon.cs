@@ -20,6 +20,7 @@ namespace Domain_Layer.Entities
 
         public bool IsActive { get; set; }
 
-        public ICollection<OrderCoupon> orderCoupons { get; set; } = new List<OrderCoupon>();
+        public ICollection<Orders> Orders { get; set; } = new List<Orders>();
+
     }
 }

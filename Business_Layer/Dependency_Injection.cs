@@ -24,7 +24,11 @@ namespace Application
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IFavoriteService, FavoriteService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IAdminOrderService, AdminOrderService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IReviewService, ReviewService>();
             return services;
         }
     }

@@ -18,11 +18,10 @@ namespace Business_Layer.Interfaces
         public IMenuItemRepo MenuItems { get; }
         public ICouponRepo couponRepo { get; }
         public INotificationRepo Notifications { get; }
-        public IGenaricRepo<OrderCoupon, int> OrderCoupon { get; }
         public IGenaricRepo<OrderItems,int> OrderItems { get; }
-        public IGenaricRepo<Orders,int> Orders { get; }
-        public IGenaricRepo<Reservations,int> Reservations { get; }
-        public IGenaricRepo<Reviews,int> Reviews { get; }
+        public IOrderRepo Orders { get; }
+        public IReservationRepo Reservations { get; }
+        public IReviewRepo Reviews { get; }
         public ITableRepo Tables { get; }
         public IGenaricRepo<Files,int> Files { get; }
         Task<IDbContextTransaction> BeginTransactionAsync();

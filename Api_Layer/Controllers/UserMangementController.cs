@@ -3,6 +3,7 @@ using Business_Layer.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Resturant_Ordering_System.Application.DTOs.UserDTOs;
 
 namespace Api_Layer.Controllers
 {
@@ -29,6 +30,13 @@ namespace Api_Layer.Controllers
         public async Task<IActionResult> GetUserInfo(string searchKey)
         {
             var result = await userManagement.GetUserInfo(searchKey);
+            return Ok(result);
+        }
+        [HttpGet("[action]")]
+        [Authorize(Roles = "Admin,Manger")]
+        public async Task<IActionResult> GetUsersByRole(string roleName) 
+        {
+         var result =  await userManagement.GetUsersByRoleAsync(roleName);
             return Ok(result);
         }
         [HttpPut("[action]")]
@@ -60,6 +68,13 @@ namespace Api_Layer.Controllers
         {
             var result =  userManagement.DeleteUser(searchKey);
             return NoContent();
+        }
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddEmployee(EmployeeDto employeeDto)
+        {
+            var result = await userManagement.AddEmployee(employeeDto);
+            return Ok(result);
         }
     }
 

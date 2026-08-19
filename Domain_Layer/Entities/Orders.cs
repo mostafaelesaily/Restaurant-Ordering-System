@@ -20,7 +20,7 @@ namespace Domain_Layer.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime ? UpdatedAt { get; set; }
 
-        public DateTime EstimatedDeliveryTime { get; set; }
+        public TimeSpan EstimatedDeliveryTime { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }
 
@@ -29,12 +29,12 @@ namespace Domain_Layer.Entities
         public string Address { get; set; }
 
         public string? Notes  { get; set;}
-
+        public int couponId { get; set; }
         public AppUser AppUser { get; set; }
         public AppUser Cheif { get; set; }
-        public AppUser DeliveryUser { get;set; }
-        public Tables Tables { get; set; }
-        public ICollection<OrderCoupon> orderCoupons { get; set; } = new List<OrderCoupon>();
+        public AppUser? DeliveryUser { get;set; }
+        public Tables? Tables { get; set; }
+        public Coupon? Coupon { get; set; }
         public ICollection<OrderItems> orderItems { get; set; } = new List<OrderItems>();
     }
 }

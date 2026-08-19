@@ -4,6 +4,7 @@ using Data_Access_Layer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260806155257_fix_estimatetime_value")]
+    partial class fix_estimatetime_value
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,9 +49,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("MustChangePassword")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -345,6 +345,29 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("Notification", (string)null);
                 });
 
+            modelBuilder.Entity("Domain_Layer.Entities.OrderCoupon", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("CouponId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("CouponId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderCoupon", (string)null);
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.OrderItems", b =>
                 {
                     b.Property<int>("id")
@@ -423,9 +446,6 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("couponId")
-                        .HasColumnType("int");
-
                     b.Property<string>("customerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -442,8 +462,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.HasIndex("couponId");
-
                     b.HasIndex("customerId");
 
                     b.ToTable("Order", (string)null);
@@ -456,12 +474,6 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("NumberOfGuests")
                         .HasColumnType("int");
@@ -812,6 +824,25 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain_Layer.Entities.OrderCoupon", b =>
+                {
+                    b.HasOne("Domain_Layer.Entities.Coupon", "coupon")
+                        .WithMany("orderCoupons")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain_Layer.Entities.Orders", "order")
+                        .WithMany("orderCoupons")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("coupon");
+
+                    b.Navigation("order");
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.OrderItems", b =>
                 {
                     b.HasOne("Domain_Layer.Entities.MenuItems", "menuItems")
@@ -848,12 +879,6 @@ namespace Data_Access_Layer.Migrations
                         .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Domain_Layer.Entities.Coupon", "Coupon")
-                        .WithMany("Orders")
-                        .HasForeignKey("couponId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain_Layer.Entities.AppUser", "AppUser")
                         .WithMany("Userorders")
                         .HasForeignKey("customerId")
@@ -863,8 +888,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Cheif");
-
-                    b.Navigation("Coupon");
 
                     b.Navigation("DeliveryUser");
 
@@ -994,7 +1017,7 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Domain_Layer.Entities.Coupon", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("orderCoupons");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.MenuItems", b =>
@@ -1012,6 +1035,8 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Domain_Layer.Entities.Orders", b =>
                 {
+                    b.Navigation("orderCoupons");
+
                     b.Navigation("orderItems");
                 });
 

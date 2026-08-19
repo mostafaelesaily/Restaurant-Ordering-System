@@ -7,6 +7,8 @@ using Business_Layer.Interfaces.IService;
 using Domain_Layer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Resturant_Ordering_System.Application.DTOs.UserDTOs;
+using Resturant_Ordering_System.Application;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -159,5 +161,45 @@ namespace Business_Layer.Services
             await cacheService.RemoveAsync("Get_User");
         }
 
+        public async Task<List<GetUserDto>> GetUsersByRoleAsync(string role)
+        {
+            logger.LogInformation("Attempting to get users with role {Role}", role);
+
+            var users = await userManager.GetUsersInRoleAsync(role);
+
+            return mapper.Map<List<GetUserDto>>(users);
+        }
+
+        public async Task<AddEmployeeResponseDto> AddEmployee(EmployeeDto employeeDto)
+        {
+            var temporaryPassword = PasswordGenerator.
+                Genrate_Temporary_Password();
+            var user =  mapper.Map<AppUser>(employeeDto);
+            user.MustChangePassword = true;
+            var result  = await userManager.CreateAsync(user,temporaryPassword);
+            if (!result.Succeeded)
+            {  
+                throw new Exception
+                    (
+                     string.Join(" ,", result.Errors.Select(e => e.Description))
+                    );
+            }
+            var roleName = employeeDto.Role.ToString();
+            var roleResult = await userManager.AddToRoleAsync(user, roleName);
+            if (!roleResult.Succeeded)
+            {
+                await userManager.DeleteAsync(user);
+
+                throw new Exception(
+                    string.Join(", ", roleResult.Errors.Select(e => e.Description))
+                );
+            }
+            var userDto = mapper.Map<GetUserDto>(user);
+            return new AddEmployeeResponseDto
+            {
+                getUserDto = userDto,
+                TemporaryPassword = temporaryPassword,
+            };
+        }
     }
 }
