@@ -2,6 +2,7 @@ using Api_Layer.Extensions;
 using Api_Layer.Middlewares;
 using Application;
 using Infrastructure.DependencyInjection;
+using Resturant_Ordering_System.Api_Layer.Extensions;
 using Resturant_Ordering_System.Infrastructre.BackgroundServices;
 using Resturant_Ordering_System.Infrastructre.DependencyInjection;
 using Resturant_Ordering_System.Infrastructre.Hubs;
@@ -22,6 +23,7 @@ builder.Services.AddFileServices();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddSendNotification();
+builder.Services.AddRateLimiting();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +35,7 @@ if (app.Environment.IsDevelopment())
 await app.SeedDatabaseAsync();
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseRateLimiter();   
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

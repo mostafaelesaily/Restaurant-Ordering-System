@@ -18,4 +18,16 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api_Layer\Resturant_Ordering_System.Api_Layer.csproj" />
+    <ProjectReference Include="..\Business_Layer\Resturant_Ordering_System.Application.csproj" />
+    <ProjectReference Include="..\Data_Access_Layer\Resturant_Ordering_System.Infrastructre.csproj" />
+  </ItemGroup>
+
 </Project>
