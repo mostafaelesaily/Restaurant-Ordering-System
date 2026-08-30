@@ -7,5 +7,5 @@ obj/
 *.suo
 
 appsettings.Development.json
-
+appsettings.json
 *.log

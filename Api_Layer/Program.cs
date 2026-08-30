@@ -23,6 +23,8 @@ builder.Services.AddFileServices();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddSendNotification();
+builder.Services.AddGmailService();
+builder.Services.AddAiService(builder.Configuration);
 builder.Services.AddRateLimiting();
 var app = builder.Build();
 
