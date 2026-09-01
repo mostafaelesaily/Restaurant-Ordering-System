@@ -53,5 +53,14 @@ namespace Api_Layer.Controllers
             await accountService.Logout(userId);
             return Ok(new { message = "Logged out successfully." });
         }
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(
+        string userId,
+        string token)
+        {
+            var result = await accountService.ConfirmEmail(userId, token);
+
+            return Ok(result);
+        }
     }
 }

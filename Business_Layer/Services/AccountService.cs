@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Resturant_Ordering_System.Application.DTOs.AuthenticationDtos;
+using Resturant_Ordering_System.Application.DTOs.EmailDTOs;
+using Resturant_Ordering_System.Application.Interfaces.IService;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,19 +28,22 @@ namespace Business_Layer.Services
         private readonly IConfiguration configuration;
         private readonly ILogger<AccountService> logger;
         private readonly IMapper mapper; 
+        private readonly IGmailService gmailService;
 
         public AccountService
             (
              UserManager<AppUser> userManager,
              IConfiguration configuration,
              ILogger<AccountService> logger,
-             IMapper mapper
+             IMapper mapper ,
+             IGmailService gmailService
             )
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.logger = logger;
             this.mapper = mapper;
+            this.gmailService = gmailService;
         }
         public async Task<string> ChangePassword(ChangePasswordDto changePasswordDto, string userId)
         {
@@ -134,6 +140,7 @@ namespace Business_Layer.Services
             var user = await userManager.FindByEmailAsync(loginDto.Email);
             logger.LogInformation("Attempting login for user with email: {Email}", loginDto.Email);
             if (user == null) throw new UnauthorizedException("Invalid Email or Password");
+            
             var isPasswordValid = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
             if (!isPasswordValid)
@@ -141,6 +148,12 @@ namespace Business_Layer.Services
                 logger.LogWarning("Login failed for user with email: {Email}. " +
                     "Invalid credentials.", loginDto.Email);
                 throw new UnauthorizedException("Invalid Email or Password");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                logger.LogWarning("Login attempt failed for user with email: {Email}. Email not confirmed.", loginDto.Email);
+                throw new UnauthorizedException("Email not confirmed. Please confirm your email before logging in.");
             }
             var Accesstoken = await GenrateAccessToken(user);
             var RefreshToken = await GenrateRefreshToken();
@@ -178,7 +191,7 @@ namespace Business_Layer.Services
             logger.LogInformation("User with ID: {UserId} logged out successfully.", userId);
         }
 
-        public async Task<AuthenticationResponseDto> Register(SignUpDto RegisterDto)
+        public async Task<RegisterResponseDto> Register(SignUpDto RegisterDto)
         {
             logger.LogInformation("Registering new user with email: {Email}", RegisterDto.Email);
             if (RegisterDto == null) { throw new ArgumentNullException(nameof(RegisterDto)); }
@@ -191,19 +204,38 @@ namespace Business_Layer.Services
                 var errors = string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
                 throw new BadRequestException(errors);
             }
-            var Accesstoken = await GenrateAccessToken(user);
-            var RefreshToken = await GenrateRefreshToken();
-            user.RefreshTokens.Add(RefreshToken);
-            await userManager.UpdateAsync(user);
-            logger.LogInformation("User registered successfully with email: {Email}", RegisterDto.Email);
-            return new AuthenticationResponseDto
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = $"https://localhost:44337/api/Account/ConfirmEmail?userId={user.Id}&token={Uri.EscapeDataString(token)}";
+            await gmailService.SendEmailAsync(new SendEmailRequestDto
             {
-                AccessToken = Accesstoken ,
-                RefreshToken = RefreshToken.Token,
-                ExpireOn = DateTime.UtcNow.AddHours(3),
+                To = RegisterDto.Email,
+                Subject = "Confirm your email",
+                Body = confirmationLink
+            });
+            logger.LogInformation("User registered successfully with email: {Email}", RegisterDto.Email);
+            return new RegisterResponseDto
+            {
                 message = "User Registered Successfully"
             };
+        }
+        public async Task<string> ConfirmEmail(string userId, string token)
+        {
+            var user = await userManager.FindByIdAsync(userId);
 
+            if (user == null)
+            {
+                logger.LogWarning("User with ID {UserId} not found for email confirmation.", userId);
+                throw new NotFoundException("User not found");
+            }
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ",
+                    result.Errors.Select(e => e.Description));
+
+                throw new BadRequestException(errors);
+            }
+            return "Email confirmed successfully";
         }
     }
 }
