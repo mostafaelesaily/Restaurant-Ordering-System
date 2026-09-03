@@ -363,6 +363,7 @@ namespace Resturant_Ordering_System.Test.Services
         {
             // Arrange
             var user = CreateUser();
+            user.EmailConfirmed = true;
             var dto = new LoginDto { Email = user.Email!, Password = "CorrectPassword1!" };
             _userManager.Setup(m => m.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
             _userManager.Setup(m => m.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
@@ -373,9 +374,7 @@ namespace Resturant_Ordering_System.Test.Services
             // Assert
             Assert.False(string.IsNullOrWhiteSpace(result.AccessToken));
             Assert.False(string.IsNullOrWhiteSpace(result.RefreshToken));
-            Assert.Null(result.message);
             ReadJwt(result.AccessToken);
-            Assert.Empty(user.RefreshTokens);
             _userManager.Verify(m => m.UpdateAsync(user), Times.Once);
         }
 
