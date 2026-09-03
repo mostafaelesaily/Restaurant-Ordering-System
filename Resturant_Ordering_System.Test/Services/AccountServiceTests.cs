@@ -3,6 +3,8 @@ using Business_Layer.DTOs.RefreshTokenDtos;
 using Business_Layer.DTOs.UserDTOs;
 using Business_Layer.Exceptions;
 using Business_Layer.Services;
+using Resturant_Ordering_System.Application.DTOs.EmailDTOs;
+using Resturant_Ordering_System.Application.Interfaces.IService;
 using Domain_Layer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,7 @@ namespace Resturant_Ordering_System.Test.Services
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ILogger<AccountService>> _logger;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<IGmailService> _gmailService;
         private readonly AccountService _sut;
 
         public AccountServiceTests()
@@ -33,6 +36,7 @@ namespace Resturant_Ordering_System.Test.Services
             _configuration = new Mock<IConfiguration>();
             _logger = new Mock<ILogger<AccountService>>();
             _mapper = new Mock<IMapper>();
+            _gmailService = new Mock<IGmailService>();
 
             _configuration.Setup(c => c["JWT:Key"]).Returns(JwtKey);
             _configuration.Setup(c => c["JWT:Issuer"]).Returns(JwtIssuer);
@@ -49,7 +53,8 @@ namespace Resturant_Ordering_System.Test.Services
                 _userManager.Object,
                 _configuration.Object,
                 _logger.Object,
-                _mapper.Object);
+                _mapper.Object,
+                _gmailService.Object);
         }
 
         private static Mock<UserManager<AppUser>> CreateUserManagerMock()
@@ -430,20 +435,23 @@ namespace Resturant_Ordering_System.Test.Services
             _userManager
                 .Setup(m => m.CreateAsync(mappedUser, dto.Password))
                 .ReturnsAsync(IdentityResult.Success);
+            _userManager
+                .Setup(m => m.GenerateEmailConfirmationTokenAsync(It.IsAny<AppUser>()))
+                .ReturnsAsync("confirmation-token");
+            _gmailService
+                .Setup(m => m.SendEmailAsync(It.IsAny<SendEmailRequestDto>()))
+                .ReturnsAsync(new SendEmailResponseDto { Success = true, Message = "Email sent successfully" });
 
             // Act
             var result = await _sut.Register(dto);
 
             // Assert
-            Assert.False(string.IsNullOrWhiteSpace(result.AccessToken));
-            Assert.False(string.IsNullOrWhiteSpace(result.RefreshToken));
+            Assert.NotNull(result);
             Assert.Equal("User Registered Successfully", result.message);
-            Assert.Single(mappedUser.RefreshTokens);
-            Assert.Equal(result.RefreshToken, mappedUser.RefreshTokens.Single().Token);
-            ReadJwt(result.AccessToken);
             _mapper.Verify(m => m.Map<AppUser>(dto), Times.Once);
             _userManager.Verify(m => m.CreateAsync(mappedUser, dto.Password), Times.Once);
-            _userManager.Verify(m => m.UpdateAsync(mappedUser), Times.Once);
+            _userManager.Verify(m => m.GenerateEmailConfirmationTokenAsync(mappedUser), Times.Once);
+            _gmailService.Verify(m => m.SendEmailAsync(It.IsAny<SendEmailRequestDto>()), Times.Once);
         }
 
         #endregion
